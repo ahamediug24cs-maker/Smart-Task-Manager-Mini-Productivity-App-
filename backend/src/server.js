@@ -9,13 +9,18 @@ dotenv.config();
 
 const app = express();
 
-const allowedOrigin = process.env.FRONTEND_URL?.replace(/\/$/, '') || "*";
-app.use(
-  cors({
-    origin: allowedOrigin,
-    credentials: true,
-  })
-);
+// Allow a temporary "allow all" CORS mode for debugging (set ALLOW_ALL_CORS=true)
+if (process.env.ALLOW_ALL_CORS === "true") {
+  app.use(cors());
+} else {
+  const allowedOrigin = process.env.FRONTEND_URL?.replace(/\/$/, '') || "*";
+  app.use(
+    cors({
+      origin: allowedOrigin,
+      credentials: true,
+    })
+  );
+}
 app.use(express.json());
 
 app.get("/api/health", (_req, res) => {
